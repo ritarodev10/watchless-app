@@ -4,62 +4,77 @@ An elegant, Obsidian-ready YouTube summarizer that runs on **Next.js** and **Ver
 
 ## 🚀 Getting Started
 
-Unlike standard Next.js apps, this project uses **Python Serverless Functions** for the backend. You cannot just run `npm run dev`.
+This project uses a hybrid architecture:
+*   **Local Development:** Independent Python Flask Server + Next.js Proxy (Reliable & fast).
+*   **Production:** Vercel Serverless Functions (Automatic & scalable).
 
 ### Prerequisites
-1.  **Node.js** & **npm**
+1.  **Node.js (v18+)**
 2.  **Python 3.9+**
-3.  **Vercel CLI**: `npm i -g vercel`
 
-### Local Development
+### 1. Installation
 
-1.  **Install Dependencies**:
+**Frontend:**
+```bash
+npm install
+```
+
+**Backend (Python):**
+```bash
+pip install -r requirements.txt
+```
+*(If pip is not found, try `python3 -m pip install -r requirements.txt`)*
+
+### 2. Configuration
+1.  Create a `.env` file in the root:
     ```bash
-    npm install
-    # Python deps are handled by Vercel automatically in actual deploy, 
-    # but for local dev you might want to install them if running purely local python scripts:
-    pip install -r requirements.txt
+    OPENROUTER_API_KEY=sk-your-key-here
     ```
 
-2.  **Setup Environment**:
-    Create a `.env.local` file:
-    ```bash
-    OPENROUTER_API_KEY=sk-or-your-key-here
-    ```
-
-3.  **Cookies (Important)**:
-    YouTube blocks automated requests. You need a `cookies.txt` file in the root of this folder for local development.
+2.  **Cookies (Critical):**
+    YouTube often blocks automated requests (429/403). To fix this:
+    *   Export cookies from YouTube using a browser extension (in Netscape format).
+    *   Save them as `cookies.txt` in this folder.
     *   *Note: This file is ignored by git for security.*
 
-4.  **Run the App**:
-    ```bash
-    vercel dev
-    ```
-    *   This starts the Next.js frontend AND the Python backend emulation.
-    *   Open `http://localhost:3000`.
+### 3. Running Locally (The "Two Terminal" Method)
+
+Because Vercel's local emulation can be buggy, we run the backend and frontend separately.
+
+**Terminal 1 (Backend):**
+```bash
+python3 python_server.py
+```
+*Starts the raw Flask server on port 5328.*
+
+**Terminal 2 (Frontend):**
+```bash
+npm run dev
+```
+*Starts Next.js on localhost:3000. It is configured to proxy all `/api/*` requests to the Python server automatically.*
+
+Open **[http://localhost:3000](http://localhost:3000)** to use the app.
+
+---
 
 ## 📦 Deployment to Vercel
 
-1.  **Push to GitHub**:
-    Initialize a repo and push this folder.
+1.  **Push to GitHub.**
 
-2.  **Import to Vercel**:
-    *   Go to Vercel Dashboard -> Add New Project.
-    *   Select your repo.
-    *   **Framework Preset**: Next.js.
-    *   **Environment Variables**:
-        *   `OPENROUTER_API_KEY`: Your API Key.
-        *   `YOUTUBE_COOKIES`: **(Critical)** Copy the *entire content* of your `cookies.txt` and paste it here. The app will reconstruct the file at runtime.
+2.  **Import to Vercel:**
+    *   Go to Vercel Dashboard -> Add New Project -> Import Repository.
 
-3.  **Deploy**:
-    Click Deploy. Vercel will build the frontend and set up the Python runtime automatically.
+3.  **Environment Variables (CRITICAL):**
+    Before deploying (or in Settings), add:
+    *   `OPENROUTER_API_KEY`: Your API Key.
+    *   `YOUTUBE_COOKIES`: **Copy and paste the entire text content of your `cookies.txt` here.**
+        *(This ensures the production server is authenticated as a real user).*
+
+4.  **Deploy.**
+    Vercel will automatically detect `api/index.py` and deploy it as a Serverless Function.
 
 ## 🛠 Architecture
 
-*   **Frontend**: Next.js 14+ (App Router), Tailwind CSS v4, Lucide React.
-*   **Backend**: Python 3 Runtime (Vercel Serverless Class).
-*   **API**: `/api/transcript` -> Maps to `api/transcript.py`.
-
-## 📄 License
-
-Private / Proprietary.
+*   **Frontend**: Next.js 16 (App Router), Tailwind CSS v4.
+*   **Local Backend**: Flask (`python_server.py`).
+*   **Prod Backend**: Vercel Serverless (`api/index.py`).
