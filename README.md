@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WatchLess (Next.js Edition)
 
-## Getting Started
+An elegant, Obsidian-ready YouTube summarizer that runs on **Next.js** and **Vercel Serverless Functions**.
 
-First, run the development server:
+## 🚀 Getting Started
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Unlike standard Next.js apps, this project uses **Python Serverless Functions** for the backend. You cannot just run `npm run dev`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Prerequisites
+1.  **Node.js** & **npm**
+2.  **Python 3.9+**
+3.  **Vercel CLI**: `npm i -g vercel`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Local Development
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    # Python deps are handled by Vercel automatically in actual deploy, 
+    # but for local dev you might want to install them if running purely local python scripts:
+    pip install -r requirements.txt
+    ```
 
-## Learn More
+2.  **Setup Environment**:
+    Create a `.env.local` file:
+    ```bash
+    OPENROUTER_API_KEY=sk-or-your-key-here
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+3.  **Cookies (Important)**:
+    YouTube blocks automated requests. You need a `cookies.txt` file in the root of this folder for local development.
+    *   *Note: This file is ignored by git for security.*
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4.  **Run the App**:
+    ```bash
+    vercel dev
+    ```
+    *   This starts the Next.js frontend AND the Python backend emulation.
+    *   Open `http://localhost:3000`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Deployment to Vercel
 
-## Deploy on Vercel
+1.  **Push to GitHub**:
+    Initialize a repo and push this folder.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2.  **Import to Vercel**:
+    *   Go to Vercel Dashboard -> Add New Project.
+    *   Select your repo.
+    *   **Framework Preset**: Next.js.
+    *   **Environment Variables**:
+        *   `OPENROUTER_API_KEY`: Your API Key.
+        *   `YOUTUBE_COOKIES`: **(Critical)** Copy the *entire content* of your `cookies.txt` and paste it here. The app will reconstruct the file at runtime.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3.  **Deploy**:
+    Click Deploy. Vercel will build the frontend and set up the Python runtime automatically.
+
+## 🛠 Architecture
+
+*   **Frontend**: Next.js 14+ (App Router), Tailwind CSS v4, Lucide React.
+*   **Backend**: Python 3 Runtime (Vercel Serverless Class).
+*   **API**: `/api/transcript` -> Maps to `api/transcript.py`.
+
+## 📄 License
+
+Private / Proprietary.

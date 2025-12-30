@@ -1,26 +1,181 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "EB Garamond", ui-serif, Georgia, serif;
+  --font-mono: "Courier Prime", monospace;
+
+  /* Desert Summer Palette */
+  --color-paper: #F7E7CC;
+  --color-clay: #894C29;
+  --color-sunrise: #C07640;
+  --color-pollen: #E0A85A;
+  --color-beans: #CD774D;
+  --color-aloe: #C9CDBD;
+  --color-sage: #B5AE7D;
+  --color-pine: #666A57;
+
+  --color-bg-paper: var(--color-paper);
+  --color-accent-primary: var(--color-clay);
+  --color-accent-secondary: var(--color-sunrise);
+  --color-text-main: var(--color-pine);
+  --color-text-dim: var(--color-pine);
+
+  --card-bg: rgba(255, 255, 255, 0.4);
+  --card-border: rgba(137, 76, 41, 0.1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Custom Utilities injected into layers */
+@layer utilities {
+  .glass {
+    @apply bg-[var(--card-bg)] backdrop-blur-md border border-[var(--card-border)] shadow-xl;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  .title-large {
+    @apply font-bold leading-[1.1] tracking-tight text-accent-primary;
+    font-size: clamp(2.5rem, 8vw, 5rem);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    @apply bg-bg-paper text-text-main min-h-screen overflow-x-hidden;
+    background-image:
+      url("https://www.transparenttextures.com/patterns/felt.png"),
+      radial-gradient(circle at 10% 20%, rgba(137, 76, 41, 0.03) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(192, 118, 64, 0.03) 0%, transparent 40%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-sans tracking-tight;
+  }
+}
+
+/* Obsidian Specific Styling - Vintage Edition */
+@layer components {
+  .obsidian-prose h3 {
+    @apply text-accent-primary mt-8 mb-3 font-semibold text-lg border-b border-clay/10 pb-1;
+  }
+
+  .obsidian-prose h2 {
+    @apply text-pine mt-10 mb-4 font-bold text-xl;
+  }
+
+  .obsidian-prose a {
+    @apply text-sunrise no-underline hover:underline transition-all font-medium;
+  }
+
+  .obsidian-prose ul {
+    @apply list-disc list-outside ml-6 mb-6 marker:text-accent-secondary/60;
+  }
+
+  .obsidian-prose ol {
+    @apply list-decimal list-outside ml-6 mb-6 marker:text-accent-secondary/60;
+  }
+
+  .obsidian-prose li {
+    @apply mb-2 pl-1 leading-relaxed text-pine/90;
+  }
+
+  .obsidian-prose li strong {
+    @apply text-pine font-semibold;
+  }
+
+  .obsidian-prose strong {
+    @apply font-bold text-pine;
+  }
+
+  .obsidian-prose code {
+    @apply bg-pine/5 px-1.5 py-0.5 rounded text-clay font-mono text-sm;
+  }
+
+  .obsidian-prose blockquote {
+    @apply border-l-4 border-accent-secondary/30 pl-4 py-1 my-4 italic text-pine/80 bg-pine/5;
+  }
+
+  .obsidian-prose blockquote:has(img) {
+    @apply float-none md:float-left w-full md:w-[40%] aspect-video m-0 md:mr-6 mb-4 overflow-hidden rounded-xl shadow-md border border-pine/10 p-0 bg-black;
+    clear: left;
+  }
+
+  .obsidian-prose blockquote img {
+    @apply w-full h-full object-cover hover:scale-105 transition-transform duration-700;
+  }
+
+  .obsidian-prose::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  .obsidian-prose .exec-summary {
+    @apply text-base text-pine leading-normal mb-6;
+  }
+
+  .obsidian-prose span[title],
+  .obsidian-prose a[href^="[["] {
+    @apply text-clay font-bold decoration-dotted underline-offset-4 hover:text-accent-secondary cursor-pointer;
+  }
+
+  .obsidian-prose pre:first-of-type {
+    @apply hidden;
+  }
+
+  /* Obsidian Properties UI */
+  .obsidian-properties {
+    @apply border border-pine/10 rounded-2xl bg-white/30 p-5 mb-8 text-sm;
+  }
+
+  .properties-header {
+    @apply flex items-center gap-2 text-pine/50 font-bold uppercase tracking-widest text-[10px] mb-3 border-b border-pine/10 pb-2;
+  }
+
+  .property-row {
+    @apply flex py-1.5 border-b border-pine/5 last:border-0 items-baseline gap-4;
+  }
+
+  .property-key {
+    @apply w-28 shrink-0 text-pine/60 flex items-center gap-2 font-medium;
+  }
+
+  .property-value {
+    @apply flex-grow text-pine flex flex-wrap gap-2;
+  }
+
+  .prop-pill {
+    @apply bg-white/40 text-pine px-2 py-0.5 rounded-md border border-pine/10 font-medium text-xs shadow-sm;
+  }
+
+  .prop-link {
+    @apply text-sunrise hover:underline cursor-pointer font-medium;
+  }
+
+  .obsidian-prose iframe {
+    @apply w-full rounded-2xl border border-pine/10 shadow-lg mb-10 aspect-video;
+    height: auto !important;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(0.5deg);
+  }
+
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }

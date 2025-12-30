@@ -1,0 +1,5 @@
+youtube-transcript-api
+requests
+flask
+flask-cors
+python-dotenv
